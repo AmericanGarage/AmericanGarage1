@@ -1,11 +1,10 @@
 /* BUILD: AmericanGarage1 – Discord login su home.html */
-/* VERSIONE: 2026-02-03 – Magazzino FIX: errori chiari + permessi */
+/* VERSIONE: 2026-02-10 – American Garage: menu veicoli + kit */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import {
   getFirestore,
   doc, getDoc, setDoc, updateDoc,
-  collection, collectionGroup, addDoc, getDocs,
-  onSnapshot, query, orderBy, limit,
+  collection, collectionGroup, addDoc, getDocs, query, orderBy, limit,
   increment, deleteDoc, writeBatch,
   runTransaction
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
@@ -146,49 +145,30 @@ function hoursToHHMM(hours) {
   return `${h}:${String(m).padStart(2, "0")} Ore`;
 }
 
-
-function escapeHtml(s) {
-  return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
-}
-
 function money(n) {
   return `$${Number(n || 0).toLocaleString("it-IT")}`;
 }
 
 /* --------- MENU --------- */
 const MENU_ITEMS = {
-  "BM_1x1":   { name: "Burger Menu 1x1", price: 800 },
-  "BM_2x2":   { name: "Burger Menu 2x2", price: 1400 },
-  "BM_3x3":   { name: "Burger Menu 3x3", price: 1700 },
-  "BM_4x4":   { name: "Burger Menu 4x4", price: 2100 },
-  "BM_5x5":   { name: "Burger Menu 5x5", price: 2700 },
-  "BM_10x10": { name: "Burger Menu 10x10", price: 5100 },
-  "BM_20x20": { name: "Burger Menu 20x20", price: 10500 },
-  "BM_50x50": { name: "Burger Menu 50x50", price: 25500 },
-  "BM_100x100": { name: "Burger Menu 100x100", price: 42500 },
-  "BM_200x200": { name: "Burger Menu 200x200", price: 80500 },
-  "BM_500x500": { name: "Burger Menu 500x500", price: 200500 },
-
-  "AC_HAMBURGER":   { name: "Hamburger", price: 210 },
-  "AC_BURGER_MAXI": { name: "Burger Maxi", price: 410 },
-  "AC_BURGER_DOPP": { name: "Burger Dopp", price: 210 },
-  "AC_BURGER_GLO":  { name: "Burger Glo", price: 310 },
-  "AC_BURGER_SEMP": { name: "Burger Semp", price: 310 },
-  "AC_WRAP":        { name: "Wrap", price: 260 },
-  "AC_PATATINE":    { name: "Patatine", price: 210 },
-  "AC_PATATINE_MC": { name: "Patatine MC", price: 310 },
-  "AC_PATATINE_G":  { name: "Patatine G", price: 310 },
-  "AC_GELATO":      { name: "Gelato", price: 260 },
-  "AC_METEORITE":   { name: "Meteorite", price: 260 },
-  "AC_JUMBO":       { name: "Jumbo", price: 410 },
-  "AC_NOODLE":      { name: "Noodle", price: 160 },
-  "AC_HOTDOG":      { name: "Hotdog", price: 210 },
-  "AC_CIAMABELLA":  { name: "Ciambella", price: 160 },
-  "AC_MELA":        { name: "Mela", price: 160 },
-  "AC_BANANA":      { name: "Banana", price: 160 },
-  "AC_ALCOLICO":    { name: "Alcolico (qualsiasi)", price: 2000 },
-
-  "GV_GRATTA":      { name: "Gratta e Vinci", price: 0 }
+  "AG_FORD_GT40_NFK": { name: "FORD GT40 — NO FULL KIT", price: 1800000 },
+  "AG_FORD_GT40_FK": { name: "FORD GT40 — FULL KIT", price: 1860000 },
+  "AG_DODGE_RAM_NFK": { name: "DODGE RAM — NO FULL KIT", price: 1600000 },
+  "AG_DODGE_RAM_FK": { name: "DODGE RAM — FULL KIT", price: 1660000 },
+  "AG_CADILLAC_CT5_NFK": { name: "CADILLAC CT5 — NO FULL KIT", price: 1550000 },
+  "AG_CADILLAC_CT5_FK": { name: "CADILLAC CT5 — FULL KIT", price: 1610000 },
+  "AG_CAMARO_2016_SS_NFK": { name: "CAMARO 2016 SS — NO FULL KIT", price: 1500000 },
+  "AG_CAMARO_2016_SS_FK": { name: "CAMARO 2016 SS — FULL KIT", price: 1560000 },
+  "AG_CAMARO_1969_NFK": { name: "CAMARO 1969 — NO FULL KIT", price: 1550000 },
+  "AG_CAMARO_1969_FK": { name: "CAMARO 1969 — FULL KIT", price: 1610000 },
+  "AG_CORVETTE_C7R_NFK": { name: "CORVETTE C7R — NO FULL KIT", price: 1200000 },
+  "AG_CORVETTE_C7R_FK": { name: "CORVETTE C7R — FULL KIT", price: 1260000 },
+  "AG_SHELBY_GT500_COBRA_NFK": { name: "SHELBY GT500 COBRA — NO FULL KIT", price: 1100000 },
+  "AG_SHELBY_GT500_COBRA_FK": { name: "SHELBY GT500 COBRA — FULL KIT", price: 1160000 },
+  "AG_PLAYMOUTH_GTX_1971_NFK": { name: "PLAYMOUTH GTX 1971 — NO FULL KIT", price: 750000 },
+  "AG_PLAYMOUTH_GTX_1971_FK": { name: "PLAYMOUTH GTX 1971 — FULL KIT", price: 800000 },
+  "AG_DODGE_CHALLENGER_1970_NFK": { name: "DODGE CHALLENGER 1970 — NO FULL KIT", price: 700000 },
+  "AG_DODGE_CHALLENGER_1970_FK": { name: "DODGE CHALLENGER 1970 — FULL KIT", price: 750000 },
 };
 
 
@@ -328,11 +308,11 @@ function setAdminLinkVisible(isDirector) {
 
 /* --------- HOME --------- */
 async function initHome(session) {
-  // Home: solo "in servizio" realtime + classifica per fatturato
-  if (!session) return;
-
-  await subscribePresenceLive();
-  await subscribeSalesRanking();
+  // Home: tempo totale rimosso (ora in Timbri)
+  await renderLeaderboard();        // tempo dipendenti (filtrato <10 min)
+  await renderPresence();           // solo chi è in servizio
+  await renderTopInvoices();        // medaglie + top
+  await renderInvoicesChart();      // grafico n° fatture
 }
 
 async function renderMyTotal(session) {
@@ -390,90 +370,6 @@ async function renderPresence() {
     );
   }
 }
-
-async function subscribePresenceLive() {
-  const body = document.getElementById("presenceBody");
-  const hint = document.getElementById("presenceHint");
-  if (!body) return;
-
-  // cleanup old
-  window.__HOME_UNSUBS = window.__HOME_UNSUBS || {};
-  if (window.__HOME_UNSUBS.presence) {
-    try { window.__HOME_UNSUBS.presence(); } catch {}
-  }
-
-  const qref = collection(db, "presence");
-  window.__HOME_UNSUBS.presence = onSnapshot(qref, (snap) => {
-    const list = [];
-    snap.forEach(d => list.push({ id:d.id, ...d.data() }));
-    list.sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
-
-    const active = list.filter(x=>x.active);
-    body.innerHTML = "";
-    if (!active.length) {
-      body.innerHTML = `<tr><td class="muted">Nessuno in servizio</td><td></td></tr>`;
-    } else {
-      for (const p of active.slice(0, 40)) {
-        const nome = (p.nome || p.id || "Sconosciuto");
-        const when = p.updatedAt ? new Date(p.updatedAt).toLocaleTimeString("it-IT", {hour:"2-digit", minute:"2-digit"}) : "";
-        body.insertAdjacentHTML("beforeend", `
-          <tr>
-            <td>👤 ${escapeHtml(nome)}</td>
-            <td class="mono">🟢 Attivo ${when ? "· " + when : ""}</td>
-          </tr>
-        `);
-      }
-    }
-    if (hint) hint.textContent = "Aggiornato: " + new Date().toLocaleTimeString("it-IT");
-  }, (err) => {
-    console.error(err);
-    body.innerHTML = `<tr><td class="muted">Errore permessi/connessione</td><td></td></tr>`;
-    if (hint) hint.textContent = "Errore: " + (err?.message || String(err));
-  });
-}
-
-async function subscribeSalesRanking() {
-  const body = document.getElementById("salesBody");
-  const hint = document.getElementById("salesHint");
-  if (!body) return;
-
-  window.__HOME_UNSUBS = window.__HOME_UNSUBS || {};
-  if (window.__HOME_UNSUBS.sales) {
-    try { window.__HOME_UNSUBS.sales(); } catch {}
-  }
-
-  const qref = query(collection(db, "utenti"), orderBy("totalSales", "desc"), limit(30));
-  window.__HOME_UNSUBS.sales = onSnapshot(qref, (snap) => {
-    const arr = [];
-    snap.forEach(d => {
-      const x = d.data() || {};
-      const sales = Number(x.totalSales || 0);
-      arr.push({ id:d.id, nome:x.nome||"Sconosciuto", sales });
-    });
-
-    body.innerHTML = "";
-    if (!arr.length || arr.every(x=>x.sales<=0)) {
-      body.innerHTML = `<tr><td class="muted">Nessun dato</td><td></td></tr>`;
-    } else {
-      const filtered = arr.filter(x=>x.sales>0);
-      filtered.forEach((x, i) => {
-        body.insertAdjacentHTML("beforeend", `
-          <tr>
-            <td class="mono">#${i+1}</td>
-            <td>👤 ${escapeHtml(x.nome)}</td>
-            <td class="mono">${money(x.sales)}</td>
-          </tr>
-        `);
-      });
-    }
-    if (hint) hint.textContent = "Aggiornato: " + new Date().toLocaleTimeString("it-IT");
-  }, (err) => {
-    console.error(err);
-    body.innerHTML = `<tr><td class="muted">Errore permessi/connessione</td><td></td></tr>`;
-    if (hint) hint.textContent = "Errore: " + (err?.message || String(err));
-  });
-}
-
 
 /* --------- TIMBRI --------- */
 async function initTimbri(session) {

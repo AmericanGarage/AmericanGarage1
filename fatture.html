@@ -1,59 +1,132 @@
-<!-- FIX: solo menu a tendina aggiornato American Garage -->
-<!-- Tutto il resto della pagina è IDENTICO: sostituisci questo file -->
-
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>American Garage • Fatture</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="./style.css">
+<meta charset="utf-8"/>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" /><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>American Garage • Fatture</title>
+<!-- NAVFIX: rende visibili i link anche se JS fallisce -->
+<!-- VIEWPORT TOP MOBILE: 20260201_2 -->
+<!-- VERSIONE: 2026-01-31 – Gratta e Vinci prezzo libero + % oltre costo base 1000 -->
+<link href="./style.css?v=20260203_navfix" rel="stylesheet"/>
 </head>
 <body>
-
-<!-- ====== CONTENUTO PAGINA INVARIATO ====== -->
-<!-- Assumo che il tuo layout e script restino uguali -->
-
-<div class="page">
-  <div class="card">
-    <h2>Nuova Fattura</h2>
-
-    <!-- MENU A TENDINA SOSTITUITO -->
-    <label for="productSelect">Veicolo</label>
-    <select id="productSelect">
-      <option value="">Seleziona veicolo</option>
-
-      <option value="FORD GT40|1800000">FORD GT40 – NO FULL KIT ($1.800.000)</option>
-      <option value="FORD GT40|1860000">FORD GT40 – FULL KIT ($1.860.000)</option>
-
-      <option value="DODGE RAM|1600000">DODGE RAM – NO FULL KIT ($1.600.000)</option>
-      <option value="DODGE RAM|1660000">DODGE RAM – FULL KIT ($1.660.000)</option>
-
-      <option value="CADILLAC CT5|1550000">CADILLAC CT5 – NO FULL KIT ($1.550.000)</option>
-      <option value="CADILLAC CT5|1610000">CADILLAC CT5 – FULL KIT ($1.610.000)</option>
-
-      <option value="CAMARO 2016 SS|1500000">CAMARO 2016 SS – NO FULL KIT ($1.500.000)</option>
-      <option value="CAMARO 2016 SS|1560000">CAMARO 2016 SS – FULL KIT ($1.560.000)</option>
-
-      <option value="CAMARO 1969|1550000">CAMARO 1969 – NO FULL KIT ($1.550.000)</option>
-      <option value="CAMARO 1969|1610000">CAMARO 1969 – FULL KIT ($1.610.000)</option>
-
-      <option value="CORVETTE C7R|1200000">CORVETTE C7R – NO FULL KIT ($1.200.000)</option>
-      <option value="CORVETTE C7R|1260000">CORVETTE C7R – FULL KIT ($1.260.000)</option>
-
-      <option value="SHELBY GT500 COBRA|1100000">SHELBY GT500 COBRA – NO FULL KIT ($1.100.000)</option>
-      <option value="SHELBY GT500 COBRA|1160000">SHELBY GT500 COBRA – FULL KIT ($1.160.000)</option>
-
-      <option value="PLAYMOUTH GTX 1971|750000">PLAYMOUTH GTX 1971 – NO FULL KIT ($750.000)</option>
-      <option value="PLAYMOUTH GTX 1971|800000">PLAYMOUTH GTX 1971 – FULL KIT ($800.000)</option>
-
-      <option value="DODGE CHALLENGER 1970|700000">DODGE CHALLENGER 1970 – NO FULL KIT ($700.000)</option>
-      <option value="DODGE CHALLENGER 1970|750000">DODGE CHALLENGER 1970 – FULL KIT ($750.000)</option>
-    </select>
-
-  </div>
+<header class="nav">
+<div class="nav-left">
+<div class="logo"><img alt="American Garage" src="./logo.svg" style="height:28px;width:28px;vertical-align:middle;margin-right:10px;border-radius:6px;"/>American Garage</div>
+<nav class="links">
+<a href="./home.html">🏠 Home</a>
+<a class="active" href="./fatture.html">🧾 Fatture</a>
+<a href="./timbri.html">🕒 Timbri</a>
+<a href="./gestionale.html" id="adminLink">⚙️ Gestionale</a>
+<a id="stockLink" href="./magazzino.html">📦 Magazzino</a>
+</nav>
+<div class="service-pill">In Servizio: <span id="inServiceText">No</span></div>
 </div>
+<div class="nav-right">
+<div class="avatar" id="avatar"></div>
+<button class="btn ghost" id="logoutBtn">🚪 Esci</button>
+</div>
+</header>
+<main class="page">
+<section class="card">
+<div class="card-title">Nuova Fattura</div>
+<div class="form-grid">
+<div style="grid-column: 1 / -1;">
+<label>🍔 Prodotto</label>
+<div class="select-wrap">
+<select id="fProdotto" required="">
+<option disabled="" selected="" value="">🚗 Seleziona veicolo...</option>
+<optgroup label="🚗 AMERICAN GARAGE">
+<option value="AG_FORD_GT40_NFK">FORD GT40 — NO FULL KIT — $1.800.000</option>
+<option value="AG_FORD_GT40_FK">FORD GT40 — FULL KIT — $1.860.000</option>
 
-<script src="./app.js"></script>
+<option value="AG_DODGE_RAM_NFK">DODGE RAM — NO FULL KIT — $1.600.000</option>
+<option value="AG_DODGE_RAM_FK">DODGE RAM — FULL KIT — $1.660.000</option>
+
+<option value="AG_CADILLAC_CT5_NFK">CADILLAC CT5 — NO FULL KIT — $1.550.000</option>
+<option value="AG_CADILLAC_CT5_FK">CADILLAC CT5 — FULL KIT — $1.610.000</option>
+
+<option value="AG_CAMARO_2016_SS_NFK">CAMARO 2016 SS — NO FULL KIT — $1.500.000</option>
+<option value="AG_CAMARO_2016_SS_FK">CAMARO 2016 SS — FULL KIT — $1.560.000</option>
+
+<option value="AG_CAMARO_1969_NFK">CAMARO 1969 — NO FULL KIT — $1.550.000</option>
+<option value="AG_CAMARO_1969_FK">CAMARO 1969 — FULL KIT — $1.610.000</option>
+
+<option value="AG_CORVETTE_C7R_NFK">CORVETTE C7R — NO FULL KIT — $1.200.000</option>
+<option value="AG_CORVETTE_C7R_FK">CORVETTE C7R — FULL KIT — $1.260.000</option>
+
+<option value="AG_SHELBY_GT500_COBRA_NFK">SHELBY GT500 COBRA — NO FULL KIT — $1.100.000</option>
+<option value="AG_SHELBY_GT500_COBRA_FK">SHELBY GT500 COBRA — FULL KIT — $1.160.000</option>
+
+<option value="AG_PLAYMOUTH_GTX_1971_NFK">PLAYMOUTH GTX 1971 — NO FULL KIT — $750.000</option>
+<option value="AG_PLAYMOUTH_GTX_1971_FK">PLAYMOUTH GTX 1971 — FULL KIT — $800.000</option>
+
+<option value="AG_DODGE_CHALLENGER_1970_NFK">DODGE CHALLENGER 1970 — NO FULL KIT — $700.000</option>
+<option value="AG_DODGE_CHALLENGER_1970_FK">DODGE CHALLENGER 1970 — FULL KIT — $750.000</option>
+</optgroup>
+</select>
+<span class="select-arrow"></span>
+</div>
+</div>
+<div>
+<label>🔢 Quantità</label>
+<div class="qty-row">
+<button class="btn ghost qty-btn" id="qtyMinus" type="button">−</button>
+<input id="fQty" min="1" step="1" type="number" value="1"/>
+<button class="btn ghost qty-btn" id="qtyPlus" type="button">+</button>
+
+<div id="customPriceWrap" style="display:none;">
+  <label>🎟️ Prezzo Gratta e Vinci (libero)</label>
+  <input id="fCustomPrice" type="number" min="0" step="1" placeholder="Inserisci prezzo (es. 1750)" />
+  <div class="muted small" style="margin-top:6px;">La % viene calcolata solo sulla parte oltre il costo base di $1,000.</div>
+</div>
+</div>
+</div>
+<div>
+<label>💶 Prezzo unitario</label>
+<input disabled="" id="fUnit" value="—"/>
+</div>
+<div>
+<label>🧾 Totale fattura</label>
+<input disabled="" id="fTot" value="—"/>
+</div>
+</div>
+<div class="btn-row left">
+<button class="btn primary" id="btnAddFattura">💾 Salva Fattura</button>
+<div class="muted small" id="fatturaHint"></div>
+</div>
+</section>
+<section class="card" style="margin-top:18px;">
+<div class="card-title">Fatture emesse</div>
+<div class="table-wrap" style="margin-top:12px;">
+<table>
+<thead>
+<tr>
+<th>📅 Data</th>
+<th>🍔 Prodotto</th>
+<th>🔢 Q.tà</th>
+<th>💶 Totale</th>
+<th>📊 %</th>
+<th>💰 Guadagno</th>
+<th>🧰 Azioni</th>
+</tr>
+</thead>
+<tbody id="fattureBody">
+<tr><td class="muted">Caricamento...</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="card chart-card chart-compact" style="margin-top:18px;">
+<div class="chart-title">VENDITE DIPENDENTI</div>
+<div class="chart-canvas">
+<canvas height="160" id="pieChart"></canvas>
+</div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="./app.js?v=AG_VEICOLI_1" type="module"></script>
 </body>
 </html>
