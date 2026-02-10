@@ -1,4 +1,4 @@
-/* BUILD: AmericanGarage1 – Discord login su home.html */
+/* BUILD: American Garage – Fatture auto + fallback senza magazzino */
 /* VERSIONE: 2026-02-10 – American Garage: menu veicoli + kit */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import {
@@ -599,9 +599,15 @@ async function initFatture(session, me) {
       await createInvoiceAndDecrementStock(session, invoicePayload, key, qty);
     } catch (e) {
       console.error(e);
-      if (hint) hint.textContent = e?.message || "Errore magazzino/fattura.";
-      alert(e?.message || "Errore: magazzino/fattura.");
-      return;
+      // Se il magazzino non è inizializzato o non hai permessi, salva comunque la fattura (fallback).
+      try {
+        await createInvoiceSimple(session, invoicePayload);
+      } catch (e2) {
+        console.error(e2);
+        if (hint) hint.textContent = e?.message || "Errore salvataggio fattura.";
+        alert(e?.message || "Errore salvataggio fattura.");
+        return;
+      }
     }
 if (hint) {
       const ptxt = perc > 0 ? `${perc}%` : "—";
@@ -1477,6 +1483,17 @@ async function renderStock() {
 }
 
 /* --------- MAGAZZINO: DECREMENTO SU FATTURA (TRANSACTION) --------- */
+
+async function createInvoiceSimple(session, payload) {
+  // Salva fattura senza magazzino (fallback)
+  await addDoc(collection(db, "utenti", session.id, "fatture"), payload);
+  await updateDoc(doc(db, "utenti", session.id), {
+    totalSales: increment(payload.importo || 0),
+    totalPersonalEarnings: increment(payload.guadagnoDipendente || 0),
+    totalInvoices: increment(1)
+  });
+}
+
 async function createInvoiceAndDecrementStock(session, payload, key, qty) {
   const userRef = doc(db, "utenti", session.id);
   const invoiceRef = doc(collection(db, "utenti", session.id, "fatture"));
