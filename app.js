@@ -1,4 +1,4 @@
-/* BUILD: AmericanGarage – Firebase collegato (Discord da impostare) */
+/* BUILD: AmericanGarage1 – Discord login su home.html */
 /* VERSIONE: 2026-02-03 – Magazzino FIX: errori chiari + permessi */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import {
@@ -24,6 +24,19 @@ const db = getFirestore(app);
 
 /* VERSIONE: 2026-01-31 – Gestionale: tutte le fatture (collectionGroup + fallback per-utente) */
 
+/* --------- DISCORD OAUTH (IMPLICIT FLOW) --------- */
+const DISCORD_CLIENT_ID = "1470037430144073884";
+const DISCORD_REDIRECT_URI = "https://americangarage.github.io/AmericanGarage1/home.html";
+function discordAuthorizeUrl() {
+  const params = new URLSearchParams({
+    client_id: DISCORD_CLIENT_ID,
+    response_type: "token",
+    redirect_uri: DISCORD_REDIRECT_URI,
+    scope: "identify"
+  });
+  return "https://discord.com/oauth2/authorize?" + params.toString();
+}
+
 /* --------- DISCORD SESSION --------- */
 function getAccessTokenFromHash() {
   const h = window.location.hash || "";
@@ -39,6 +52,35 @@ async function fetchDiscordUser(token) {
   if (!res.ok) throw new Error("Discord API error");
   return await res.json();
 }
+
+
+async function initOAuthOnPage() {
+  const token = getAccessTokenFromHash();
+  if (token) {
+    try {
+      const u = await fetchDiscordUser(token);
+      saveSession(u);
+      history.replaceState({}, document.title, window.location.pathname + window.location.search);
+      window.location.href = "./home.html";
+      return;
+    } catch (e) {
+      console.error(e);
+      alert("Login Discord fallito. Riprova.");
+      history.replaceState({}, document.title, window.location.pathname + window.location.search);
+    }
+  }
+
+  const s = getSession();
+  const loginCard = document.getElementById("loginCard");
+  const loginBtn = document.getElementById("loginBtn");
+  if (!s) {
+    if (loginCard) loginCard.style.display = "";
+    if (loginBtn) loginBtn.href = discordAuthorizeUrl();
+  } else {
+    if (loginCard) loginCard.style.display = "none";
+  }
+}
+
 
 function saveSession(u) {
   localStorage.setItem("discord_id", u.id);
@@ -60,13 +102,13 @@ function logout() {
   localStorage.removeItem("discord_avatar");
   localStorage.removeItem("shift_start_ms");
   localStorage.removeItem("in_service");
-  window.location.href = "./index.html";
+  window.location.href = "./home.html";
 }
 
 function requireAuthOrRedirect() {
   const page = location.pathname.split("/").pop();
   if (page === "index.html" || page === "") return;
-  if (!getSession()) window.location.href = "./index.html";
+  if (!getSession()) window.location.href = "./home.html";
 }
 
 function setAvatarUI(session) {
@@ -241,11 +283,12 @@ function setAdminLinkVisible(isDirector) {
       window.history.replaceState({}, document.title, window.location.pathname);
     } catch {
       alert("Login Discord fallito. Controlla Redirect URI e riprova.");
-      window.location.href = "./index.html";
+      window.location.href = "./home.html";
       return;
     }
   }
 
+  await initOAuthOnPage();
   requireAuthOrRedirect();
   const session = getSession();
   if (!session) return;

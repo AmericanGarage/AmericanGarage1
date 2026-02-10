@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" /><title>Burger Shot • Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" /><title>American Garage • Home</title>
 <!-- NAVFIX: rende visibili i link anche se JS fallisce -->
 <!-- VIEWPORT TOP MOBILE: 20260201_2 -->
-  <link rel="stylesheet" href="./style.css?v=AG_20260204_1" />
+  <link rel="stylesheet" href="./style.css?v=AG1_home" />
 </head>
 <body>
   <header class="nav">
     <div class="nav-left">
       <div class="brand">
-        <img class="brand-logo" src="./logo.png" alt="Burger Shot" />
+        <img class="brand-logo" src="./logo.png" alt="American Garage" />
         <div class="brand-text">
-          <div class="brand-name">Burger Shot</div>
+          <div class="brand-name">American Garage</div>
           <div class="brand-tag">Dashboard</div>
         </div>
       </div>
@@ -34,6 +34,14 @@
   </header>
 
   <main class="page">
+    <section class="card" id="loginCard" style="display:none;">
+      <div class="card-title">🔐 Login</div>
+      <div class="muted small">Accedi con Discord per usare il gestionale.</div>
+      <div class="btn-row left" style="margin-top:12px;">
+        <a class="btn primary" id="loginBtn" href="#">Accedi con Discord</a>
+      </div>
+    </section>
+
     <div class="grid-2">
       <section class="card">
         <div class="card-title">🏆 Migliori Dipendenti</div>
@@ -78,6 +86,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script type="module" src="./app.js?v=AG_20260204_1"></script>
+  <script type="module" src="./app.js?v=AG1_home"></script>
 </body>
 </html>
