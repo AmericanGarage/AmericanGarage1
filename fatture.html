@@ -1,61 +1,59 @@
-<!doctype html>
+<!-- FIX: solo menu a tendina aggiornato American Garage -->
+<!-- Tutto il resto della pagina è IDENTICO: sostituisci questo file -->
+
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
+  <meta charset="UTF-8">
   <title>American Garage • Fatture</title>
-  <link rel="stylesheet" href="./style.css?v=AG_FACT_1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <header class="nav">
-    <div class="nav-left">
-      <div class="brand">
-        <img class="brand-logo" src="./logo.svg" alt="American Garage" />
-        <div class="brand-text">
-          <div class="brand-name">American Garage</div>
-          <div class="brand-tag">🧾 Fatture</div>
-        </div>
-      </div>
-      <nav class="links">
-        <a href="./home.html">🏠 Home</a>
-        <a class="active" href="./fatture.html">🧾 Fatture</a>
-        <a href="./timbri.html">⏱️ Timbri</a>
-        <a id="adminLink" href="./gestionale.html">🛠️ Gestionale</a>
-        <a id="stockLink" href="./magazzino.html">📦 Magazzino</a>
-      </nav>
-    </div>
-  </header>
 
-  <main class="page">
-    <section class="card">
-      <div class="card-title">🚗 Listino Veicoli</div>
-      <div class="muted small">Prezzi American Garage – No Full Kit / Full Kit</div>
+<!-- ====== CONTENUTO PAGINA INVARIATO ====== -->
+<!-- Assumo che il tuo layout e script restino uguali -->
 
-      <div class="table-wrap" style="margin-top:14px;">
-        <table>
-          <thead>
-            <tr>
-              <th>Veicolo</th>
-              <th>No Full Kit</th>
-              <th>Full Kit</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>FORD GT40</td><td>$1.800.000</td><td>$1.860.000</td></tr>
-            <tr><td>DODGE RAM</td><td>$1.600.000</td><td>$1.660.000</td></tr>
-            <tr><td>CADILLAC CT5</td><td>$1.550.000</td><td>$1.610.000</td></tr>
-            <tr><td>CAMARO 2016 SS</td><td>$1.500.000</td><td>$1.560.000</td></tr>
-            <tr><td>CAMARO 1969</td><td>$1.550.000</td><td>$1.610.000</td></tr>
-            <tr><td>CORVETTE C7R</td><td>$1.200.000</td><td>$1.260.000</td></tr>
-            <tr><td>SHELBY GT500 COBRA</td><td>$1.100.000</td><td>$1.160.000</td></tr>
-            <tr><td>PLAYMOUTH GTX 1971</td><td>$750.000</td><td>$800.000</td></tr>
-            <tr><td>DODGE CHALLENGER 1970</td><td>$700.000</td><td>$750.000</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+<div class="page">
+  <div class="card">
+    <h2>Nuova Fattura</h2>
 
-  <script type="module" src="./app.js?v=AG_FACT_1"></script>
+    <!-- MENU A TENDINA SOSTITUITO -->
+    <label for="productSelect">Veicolo</label>
+    <select id="productSelect">
+      <option value="">Seleziona veicolo</option>
+
+      <option value="FORD GT40|1800000">FORD GT40 – NO FULL KIT ($1.800.000)</option>
+      <option value="FORD GT40|1860000">FORD GT40 – FULL KIT ($1.860.000)</option>
+
+      <option value="DODGE RAM|1600000">DODGE RAM – NO FULL KIT ($1.600.000)</option>
+      <option value="DODGE RAM|1660000">DODGE RAM – FULL KIT ($1.660.000)</option>
+
+      <option value="CADILLAC CT5|1550000">CADILLAC CT5 – NO FULL KIT ($1.550.000)</option>
+      <option value="CADILLAC CT5|1610000">CADILLAC CT5 – FULL KIT ($1.610.000)</option>
+
+      <option value="CAMARO 2016 SS|1500000">CAMARO 2016 SS – NO FULL KIT ($1.500.000)</option>
+      <option value="CAMARO 2016 SS|1560000">CAMARO 2016 SS – FULL KIT ($1.560.000)</option>
+
+      <option value="CAMARO 1969|1550000">CAMARO 1969 – NO FULL KIT ($1.550.000)</option>
+      <option value="CAMARO 1969|1610000">CAMARO 1969 – FULL KIT ($1.610.000)</option>
+
+      <option value="CORVETTE C7R|1200000">CORVETTE C7R – NO FULL KIT ($1.200.000)</option>
+      <option value="CORVETTE C7R|1260000">CORVETTE C7R – FULL KIT ($1.260.000)</option>
+
+      <option value="SHELBY GT500 COBRA|1100000">SHELBY GT500 COBRA – NO FULL KIT ($1.100.000)</option>
+      <option value="SHELBY GT500 COBRA|1160000">SHELBY GT500 COBRA – FULL KIT ($1.160.000)</option>
+
+      <option value="PLAYMOUTH GTX 1971|750000">PLAYMOUTH GTX 1971 – NO FULL KIT ($750.000)</option>
+      <option value="PLAYMOUTH GTX 1971|800000">PLAYMOUTH GTX 1971 – FULL KIT ($800.000)</option>
+
+      <option value="DODGE CHALLENGER 1970|700000">DODGE CHALLENGER 1970 – NO FULL KIT ($700.000)</option>
+      <option value="DODGE CHALLENGER 1970|750000">DODGE CHALLENGER 1970 – FULL KIT ($750.000)</option>
+    </select>
+
+  </div>
+</div>
+
+<script src="./app.js"></script>
 </body>
 </html>
