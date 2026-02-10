@@ -1530,3 +1530,77 @@ async function restoreStockOnInvoiceDelete(uid, prodottoKey, qty) {
     console.warn("restoreStockOnInvoiceDelete:", e);
   }
 }
+
+
+
+/* --------- BOOTSTRAP ROUTER --------- */
+(async function boot() {
+  try {
+    await initOAuthOnPage();
+  } catch (e) {
+    console.error("initOAuthOnPage:", e);
+  }
+
+  // se non loggato, reindirizza (tranne home/index)
+  try { requireAuthOrRedirect(); } catch (e) { console.error(e); }
+
+  const session = getSession();
+  if (session) setAvatarUI(session);
+
+  const page = (location.pathname.split("/").pop() || "home.html").toLowerCase();
+  if (!session && page !== "home.html" && page !== "index.html" && page !== "") return;
+
+  try {
+    // carica profilo utente (crea se manca) e mostra link direttore
+    if (session) {
+      const userRef = doc(db, "utenti", session.id);
+      let snap = await getDoc(userRef);
+      if (!snap.exists()) {
+        await setDoc(userRef, {
+          nome: session.username,
+          ruolo: "dipendente",
+          pagaOraria: 0,
+          totalHours: 0,
+          totalSales: 0,
+          totalPersonalEarnings: 0,
+          totalInvoices: 0,
+          createdAt: Date.now()
+        }, { merge: true });
+        snap = await getDoc(userRef);
+      }
+
+      const me = snap.data() || {};
+      const isDirector = String(me.ruolo || "").toLowerCase().trim() === "direttore";
+      try { setAdminLinkVisible(isDirector); } catch (e) {}
+    }
+  } catch (e) {
+    console.error("load user:", e);
+  }
+
+  // pagina specifica
+  try {
+    const meSnap = session ? await getDoc(doc(db, "utenti", session.id)) : null;
+    const me = meSnap?.data?.() || null;
+
+    if (page === "home.html" || page === "") {
+      if (typeof initHome === "function") await initHome(session, me);
+    } else if (page === "fatture.html") {
+      if (typeof initFatture === "function") await initFatture(session, me);
+    } else if (page === "timbri.html") {
+      if (typeof initTimbri === "function") await initTimbri(session, me);
+    } else if (page === "gestionale.html") {
+      if (typeof initGestionale === "function") await initGestionale(session, me);
+    } else if (page === "magazzino.html") {
+      if (typeof initMagazzino === "function") await initMagazzino(session, me);
+    }
+  } catch (e) {
+    console.error("router:", e);
+    // mostra errore a schermo se c'è un placeholder
+    const box = document.getElementById("pageError");
+    if (box) box.textContent = e?.message || String(e);
+  }
+
+  // bind logout
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) logoutBtn.addEventListener("click", logout);
+})();
