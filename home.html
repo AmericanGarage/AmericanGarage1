@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" /><title>American Garage • Home</title>
 <!-- NAVFIX: rende visibili i link anche se JS fallisce -->
 <!-- VIEWPORT TOP MOBILE: 20260201_2 -->
-  <link rel="stylesheet" href="./style.css?v=AG1_home" />
+  <link rel="stylesheet" href="./style.css?v=AG1_presence_sales" />
 </head>
 <body>
   <header class="nav">
@@ -42,50 +42,38 @@
       </div>
     </section>
 
-    <div class="grid-2">
-      <section class="card">
-        <div class="card-title">🏆 Migliori Dipendenti</div>
-        <div class="muted small">Classifica in base al numero di fatture emesse.</div>
+    <section class="card" style="margin-top:18px;">
+      <div class="card-title">🟢 Dipendenti in servizio (Live)</div>
+      <div class="muted small">Aggiornamento in tempo reale.</div>
+      <div class="muted small mono" id="presenceHint" style="margin-top:6px;"></div>
 
-        <div id="topInvoices" class="medal-row" style="margin-top:12px;"></div>
-
-        <div class="divider"></div>
-
-        <div class="table-wrap" style="margin-top:10px;">
-          <table>
-            <thead><tr><th>👤 Dipendente</th><th>🧾 Fatture</th></tr></thead>
-            <tbody id="topInvoicesList">
-              <tr><td class="muted">Caricamento...</td><td></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-title">🟢 In Servizio (Live)</div>
-        <div class="muted small">Aggiornato in tempo reale (chi è attualmente in servizio).</div>
-
-        <div class="table-wrap" style="margin-top:12px;">
-          <table>
-            <thead><tr><th>👤 Dipendente</th><th>📡 Stato</th></tr></thead>
-            <tbody id="presenceBody">
-              <tr><td class="muted">Caricamento...</td><td></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </div>
-
-    <section class="card chart-card chart-compact" style="margin-top:18px;">
-      <div class="chart-title">FATTURE (TOP 12)</div>
-      <div class="chart-canvas">
-        <canvas id="invoicesChart" height="160"></canvas>
+      <div class="table-wrap" style="margin-top:12px;">
+        <table>
+          <thead><tr><th>👤 Dipendente</th><th>📡 Stato</th></tr></thead>
+          <tbody id="presenceBody">
+            <tr><td class="muted">Caricamento...</td><td></td></tr>
+          </tbody>
+        </table>
       </div>
-      <div class="muted small" style="margin-top:8px;">Grafico del numero fatture per dipendente.</div>
+    </section>
+
+    <section class="card" style="margin-top:18px;">
+      <div class="card-title">🏆 Classifica per fatturato</div>
+      <div class="muted small">Ordinata per fatturato totale.</div>
+      <div class="muted small mono" id="salesHint" style="margin-top:6px;"></div>
+
+      <div class="table-wrap" style="margin-top:12px;">
+        <table>
+          <thead><tr><th>#</th><th>👤 Dipendente</th><th>💰 Fatturato</th></tr></thead>
+          <tbody id="salesBody">
+            <tr><td class="muted">Caricamento...</td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script type="module" src="./app.js?v=AG1_home"></script>
+  <script type="module" src="./app.js?v=AG1_presence_sales"></script>
 </body>
 </html>

@@ -4,7 +4,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebas
 import {
   getFirestore,
   doc, getDoc, setDoc, updateDoc,
-  collection, collectionGroup, addDoc, getDocs, query, orderBy, limit,
+  collection, collectionGroup, addDoc, getDocs,
+  onSnapshot, query, orderBy, limit,
   increment, deleteDoc, writeBatch,
   runTransaction
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
@@ -143,6 +144,11 @@ function hoursToHHMM(hours) {
   const h = Math.floor(totalMin / 60);
   const m = totalMin % 60;
   return `${h}:${String(m).padStart(2, "0")} Ore`;
+}
+
+
+function escapeHtml(s) {
+  return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
 
 function money(n) {
@@ -322,11 +328,11 @@ function setAdminLinkVisible(isDirector) {
 
 /* --------- HOME --------- */
 async function initHome(session) {
-  // Home: tempo totale rimosso (ora in Timbri)
-  await renderLeaderboard();        // tempo dipendenti (filtrato <10 min)
-  await renderPresence();           // solo chi è in servizio
-  await renderTopInvoices();        // medaglie + top
-  await renderInvoicesChart();      // grafico n° fatture
+  // Home: solo "in servizio" realtime + classifica per fatturato
+  if (!session) return;
+
+  await subscribePresenceLive();
+  await subscribeSalesRanking();
 }
 
 async function renderMyTotal(session) {
@@ -384,6 +390,90 @@ async function renderPresence() {
     );
   }
 }
+
+async function subscribePresenceLive() {
+  const body = document.getElementById("presenceBody");
+  const hint = document.getElementById("presenceHint");
+  if (!body) return;
+
+  // cleanup old
+  window.__HOME_UNSUBS = window.__HOME_UNSUBS || {};
+  if (window.__HOME_UNSUBS.presence) {
+    try { window.__HOME_UNSUBS.presence(); } catch {}
+  }
+
+  const qref = collection(db, "presence");
+  window.__HOME_UNSUBS.presence = onSnapshot(qref, (snap) => {
+    const list = [];
+    snap.forEach(d => list.push({ id:d.id, ...d.data() }));
+    list.sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
+
+    const active = list.filter(x=>x.active);
+    body.innerHTML = "";
+    if (!active.length) {
+      body.innerHTML = `<tr><td class="muted">Nessuno in servizio</td><td></td></tr>`;
+    } else {
+      for (const p of active.slice(0, 40)) {
+        const nome = (p.nome || p.id || "Sconosciuto");
+        const when = p.updatedAt ? new Date(p.updatedAt).toLocaleTimeString("it-IT", {hour:"2-digit", minute:"2-digit"}) : "";
+        body.insertAdjacentHTML("beforeend", `
+          <tr>
+            <td>👤 ${escapeHtml(nome)}</td>
+            <td class="mono">🟢 Attivo ${when ? "· " + when : ""}</td>
+          </tr>
+        `);
+      }
+    }
+    if (hint) hint.textContent = "Aggiornato: " + new Date().toLocaleTimeString("it-IT");
+  }, (err) => {
+    console.error(err);
+    body.innerHTML = `<tr><td class="muted">Errore permessi/connessione</td><td></td></tr>`;
+    if (hint) hint.textContent = "Errore: " + (err?.message || String(err));
+  });
+}
+
+async function subscribeSalesRanking() {
+  const body = document.getElementById("salesBody");
+  const hint = document.getElementById("salesHint");
+  if (!body) return;
+
+  window.__HOME_UNSUBS = window.__HOME_UNSUBS || {};
+  if (window.__HOME_UNSUBS.sales) {
+    try { window.__HOME_UNSUBS.sales(); } catch {}
+  }
+
+  const qref = query(collection(db, "utenti"), orderBy("totalSales", "desc"), limit(30));
+  window.__HOME_UNSUBS.sales = onSnapshot(qref, (snap) => {
+    const arr = [];
+    snap.forEach(d => {
+      const x = d.data() || {};
+      const sales = Number(x.totalSales || 0);
+      arr.push({ id:d.id, nome:x.nome||"Sconosciuto", sales });
+    });
+
+    body.innerHTML = "";
+    if (!arr.length || arr.every(x=>x.sales<=0)) {
+      body.innerHTML = `<tr><td class="muted">Nessun dato</td><td></td></tr>`;
+    } else {
+      const filtered = arr.filter(x=>x.sales>0);
+      filtered.forEach((x, i) => {
+        body.insertAdjacentHTML("beforeend", `
+          <tr>
+            <td class="mono">#${i+1}</td>
+            <td>👤 ${escapeHtml(x.nome)}</td>
+            <td class="mono">${money(x.sales)}</td>
+          </tr>
+        `);
+      });
+    }
+    if (hint) hint.textContent = "Aggiornato: " + new Date().toLocaleTimeString("it-IT");
+  }, (err) => {
+    console.error(err);
+    body.innerHTML = `<tr><td class="muted">Errore permessi/connessione</td><td></td></tr>`;
+    if (hint) hint.textContent = "Errore: " + (err?.message || String(err));
+  });
+}
+
 
 /* --------- TIMBRI --------- */
 async function initTimbri(session) {
